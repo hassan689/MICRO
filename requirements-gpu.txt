@@ -1,0 +1,6 @@
+# CUDA 12.6 builds retain support for the GTX 1060 (Pascal).
+# Install using .venv-gpu, separately from the existing CPU environment.
+--index-url https://download.pytorch.org/whl/cu126
+torch==2.14.1+cu126
+torchvision==0.29.1+cu126
+Pillow>=10.0

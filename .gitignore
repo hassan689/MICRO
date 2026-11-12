@@ -1,0 +1,54 @@
+# Git ignore file for Python projects
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+.venv-gpu/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyTorch
+*.pth
+*.pt
+
+# Downloaded datasets and generated data (documented in data/README.md)
+/data/raw/
+/data/processed/
+/data/augmented/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs
+outputs/
+
+# Checkpoints
+checkpoints/
+*.ckpt
+

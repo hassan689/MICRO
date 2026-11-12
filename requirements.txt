@@ -1,0 +1,37 @@
+torch>=2.0.0
+torchvision>=0.15.0
+torch-geometric>=2.3.0
+
+# Image processing
+opencv-python>=4.8.0
+scikit-image>=0.21.0
+Pillow>=10.0.0
+
+# PCB/Gerber tools
+pcb-tools>=0.1.0
+gerber-to-svg>=0.1.0
+shapely>=2.0.0
+
+# Data handling
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Utilities
+tqdm>=4.66.0
+pyyaml>=6.0
+tensorboard>=2.14.0
+
+# Optional: For KiCad automation
+# kicad-python>=0.1.0  # if available
+
+# Development tools
+jupyter>=1.0.0
+ipython>=8.14.0
+black>=23.7.0
+flake8>=6.1.0
+
