@@ -1,0 +1,9 @@
+frozen: true
+deps:
+- path: .
+  repo:
+    url: https://github.com/tangsanli5201/DeepPCB.git
+    rev: 08e98c4db5922613fb97176eb3d6497d48260cb1
+outs:
+- hash: md5
+  path: DeepPCB

@@ -30,6 +30,12 @@ dist/
 /data/raw/
 /data/processed/
 /data/augmented/
+# Keep DVC metadata versioned while ignoring the data it describes.
+!/data/raw/
+/data/raw/*
+!/data/raw/*.dvc
+!/data/processed/
+/data/processed/*
 
 # Logs
 logs/

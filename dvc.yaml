@@ -1,0 +1,10 @@
+stages:
+  prepare:
+    cmd: python -m preprocessing.prepare --raw-root data/raw/DeepPCB/PCBData
+      --output data/processed/deeppcb_manifest.json
+    deps:
+      - data/raw/DeepPCB
+      - preprocessing/dataset.py
+      - preprocessing/prepare.py
+    outs:
+      - data/processed/deeppcb_manifest.json

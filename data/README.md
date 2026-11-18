@@ -59,6 +59,12 @@ These are detection boxes, not segmentation masks or optimized-layout targets.
 
 ## Training preparation
 
+The raw dataset is versioned with DVC. From the repository root, run
+`dvc pull` to retrieve the pinned DeepPCB revision, then run `dvc repro` to
+validate both official splits and create the tracked processed manifest at
+`data/processed/deeppcb_manifest.json`. The imported dataset revision is
+recorded in `data/raw/DeepPCB.dvc`; do not commit the downloaded raw files.
+
 1. Read the original split files and resolve the image pairs and annotations.
 2. Create a validation subset from `trainval.txt`; keep the official test set
    reserved for final evaluation. Keep related crops and augmented versions
