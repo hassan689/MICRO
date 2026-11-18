@@ -4,6 +4,11 @@ deps:
   repo:
     url: https://github.com/tangsanli5201/DeepPCB.git
     rev: 08e98c4db5922613fb97176eb3d6497d48260cb1
+    rev_lock: 08e98c4db5922613fb97176eb3d6497d48260cb1
 outs:
 - hash: md5
   path: DeepPCB
+  md5: 0dd139bb5d2de9fa5a02a04eab302924.dir
+  size: 127807630
+  nfiles: 4548
+md5: 08ee4c4675552545ff21b69e37cdab08

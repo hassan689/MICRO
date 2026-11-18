@@ -1,0 +1,20 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m preprocessing.prepare --raw-root data/raw/DeepPCB/PCBData 
+      --output data/processed/deeppcb_manifest.json
+    deps:
+    - path: data/raw/DeepPCB
+      hash: md5
+      md5: 0dd139bb5d2de9fa5a02a04eab302924.dir
+      size: 127807630
+      nfiles: 4548
+    - path: preprocessing/prepare.py
+      hash: md5
+      md5: 1576e8d2386515bd6b0f0021bb62b08d
+      size: 3893
+    outs:
+    - path: data/processed/deeppcb_manifest.json
+      hash: md5
+      md5: 10266e7af61e4cc930dc0cb6a2dc14f8
+      size: 559

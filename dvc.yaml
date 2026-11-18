@@ -4,7 +4,6 @@ stages:
       --output data/processed/deeppcb_manifest.json
     deps:
       - data/raw/DeepPCB
-      - preprocessing/dataset.py
       - preprocessing/prepare.py
     outs:
       - data/processed/deeppcb_manifest.json
