@@ -7,3 +7,154 @@ stages:
       - preprocessing/prepare.py
     outs:
       - data/processed/deeppcb_manifest.json
+
+  split:
+    cmd: python -m preprocessing.splits --root data/raw/DeepPCB/PCBData
+      --output data/splits/deeppcb.json
+    deps:
+      - data/processed/deeppcb_manifest.json
+      - preprocessing/splits.py
+    outs:
+      - data/splits/deeppcb.json:
+          cache: false
+
+  baseline:
+    cmd: python -m baselines.difference_detector --root data/raw/DeepPCB/PCBData
+      --split-file data/splits/deeppcb.json
+      --output outputs/baseline/difference-detector
+    deps:
+      - data/raw/DeepPCB
+      - data/splits/deeppcb.json
+      - baselines/difference_detector.py
+    outs:
+      - outputs/baseline/difference-detector/config.json:
+          cache: false
+      - outputs/baseline/difference-detector/predictions.json:
+          cache: false
+      - outputs/baseline/difference-detector/per_image.csv:
+          cache: false
+    metrics:
+      - outputs/baseline/difference-detector/metrics.json:
+          cache: false
+
+  train:
+    cmd: python -m training.train --root data/raw/DeepPCB/PCBData
+      --split-file data/splits/deeppcb.json
+      --output outputs/training/dvc-run
+      --smoke-test
+      --no-pretrained
+      --overwrite-output
+    deps:
+      - data/raw/DeepPCB
+      - data/splits/deeppcb.json
+      - training/train.py
+      - models/detector.py
+      - models/ml_extensions.py
+      - evaluation/metrics.py
+    outs:
+      - outputs/training/dvc-run/config.json:
+          cache: false
+      - outputs/training/dvc-run/metrics.jsonl:
+          cache: false
+    metrics:
+      - outputs/training/dvc-run/summary_metrics.json:
+          cache: false
+
+  export_mlflow:
+    cmd: python -m evaluation.export_mlflow
+      --output-dir outputs/mlflow_report
+    deps:
+      - evaluation/export_mlflow.py
+      - outputs/baseline/difference-detector/metrics.json
+      - outputs/training/dvc-run/summary_metrics.json
+    outs:
+      - outputs/mlflow_report/mlflow_runs_and_registry.json:
+          cache: false
+      - outputs/mlflow_report/mlflow_runs_and_registry.md:
+          cache: false
+
+  image_to_circuit:
+    cmd: python -m components.image_to_circuit
+      --raw-root data/raw/DeepPCB/PCBData
+      --sample-index 0
+      --output-dir outputs/generated_inputs
+    deps:
+      - data/processed/deeppcb_manifest.json
+      - components/image_to_circuit.py
+    outs:
+      - outputs/generated_inputs/generated_bom.csv:
+          cache: false
+      - outputs/generated_inputs/generated_board.net:
+          cache: false
+      - outputs/generated_inputs/image_synthesis_metadata.json:
+          cache: false
+
+  circuit_map:
+    cmd: python -m components.circuit_map
+      --bom outputs/generated_inputs/generated_bom.csv
+      --netlist outputs/generated_inputs/generated_board.net
+      --output-dir outputs/components
+    deps:
+      - outputs/generated_inputs/generated_bom.csv
+      - outputs/generated_inputs/generated_board.net
+      - components/circuit_map.py
+    outs:
+      - outputs/components/circuit_map.json:
+          cache: false
+      - outputs/components/components_summary.csv:
+          cache: false
+      - outputs/components/pin_connections.csv:
+          cache: false
+
+  recommend:
+    cmd: python -m recommendations.recommender
+      --ref Q1
+      --bom outputs/generated_inputs/generated_bom.csv
+      --netlist outputs/generated_inputs/generated_board.net
+      --catalog data/inputs/mosfet_catalog.json
+      --output-dir outputs/recommendations
+    deps:
+      - outputs/components/circuit_map.json
+      - data/inputs/mosfet_catalog.json
+      - recommendations/recommender.py
+    outs:
+      - outputs/recommendations/recommendations_q1.json:
+          cache: false
+      - outputs/recommendations/candidates_q1.csv:
+          cache: false
+
+  rank:
+    cmd: python -m ranking.cost_performance
+      --ref Q1
+      --quantity 100
+      --currency USD
+      --bom outputs/generated_inputs/generated_bom.csv
+      --netlist outputs/generated_inputs/generated_board.net
+      --catalog data/inputs/mosfet_catalog.json
+      --quotes data/inputs/supplier_quotes.json
+      --output-dir outputs/ranking
+    deps:
+      - outputs/recommendations/recommendations_q1.json
+      - data/inputs/supplier_quotes.json
+      - ranking/cost_performance.py
+    outs:
+      - outputs/ranking/ranking_q1_qty100_usd.json:
+          cache: false
+      - outputs/ranking/ranking_q1_qty100_usd.csv:
+          cache: false
+
+  comparison:
+    cmd: python -m evaluation.comparison_engine
+      --raw-root data/raw/DeepPCB/PCBData
+      --sample-index 0
+      --quantity 100
+      --currency USD
+      --output-dir outputs/comparison
+    deps:
+      - outputs/ranking/ranking_q1_qty100_usd.json
+      - evaluation/comparison_engine.py
+    outs:
+      - outputs/comparison/before_after_comparison.json:
+          cache: false
+      - outputs/comparison/before_after_comparison.png:
+          cache: false

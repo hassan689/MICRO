@@ -7,7 +7,30 @@ import random
 from collections import defaultdict
 from pathlib import Path
 
-from preprocessing.dataset import DEFAULT_DATA_ROOT, PROJECT_ROOT, DeepPCBDataset
+try:
+    from preprocessing.dataset import DEFAULT_DATA_ROOT, PROJECT_ROOT, DeepPCBDataset
+except ImportError:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+    DEFAULT_DATA_ROOT = PROJECT_ROOT / "data/raw/DeepPCB/PCBData"
+
+    class DeepPCBDataset:
+        def __init__(self, root=DEFAULT_DATA_ROOT, split="trainval"):
+            self.root = Path(root)
+            self.samples = []
+            split_path = self.root / f"{split}.txt"
+            for line_number, line in enumerate(split_path.read_text(encoding="utf-8").splitlines(), 1):
+                if not line.strip():
+                    continue
+                fields = line.split()
+                if len(fields) != 2:
+                    raise ValueError(f"{split_path}:{line_number}: expected two paths")
+                base = Path(fields[0])
+                image_path = self.root / base.with_name(f"{base.stem}_test.jpg")
+                label_path = self.root / fields[1]
+                for path in (image_path, label_path):
+                    if not path.is_file():
+                        raise FileNotFoundError(f"Missing dataset file: {path}")
+                self.samples.append((image_path, label_path))
 
 DEFAULT_SPLIT_PATH = PROJECT_ROOT / "data/splits/deeppcb.json"
 
