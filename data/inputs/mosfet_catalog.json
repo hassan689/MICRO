@@ -1,0 +1,281 @@
+{
+  "catalog_version": "2026.11-v1",
+  "description": "Curated MOSFET catalog snapshot with package, pinout order, electrical limits, and datasheet evidence for PCB replacement evaluation (Module 3).",
+  "candidates": [
+    {
+      "part_number": "VN10LP",
+      "manufacturer": "Microchip / Supertex",
+      "channel": "N-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.27,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 2.5,
+        "rds_on_max_ohm": 5.0,
+        "pd_max_w": 1.0,
+        "qg_typ_nc": 1.8
+      },
+      "datasheet": {
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/VN10LP-N-Channel-Enhancement-Mode-Vertical-DMOS-FET-Data-Sheet-20005681A.pdf",
+        "revision": "DS20005681A",
+        "evidence": "TO-92 package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S, drop-in pin-compatible with European TO-92 C-B-E footprint like BC237); V_DSS = 60V, I_D = 270mA, V_GS(th) = 2.5V max, R_DS(on) = 5.0 Ohm @ V_GS = 5V, P_D = 1.0W."
+      }
+    },
+    {
+      "part_number": "ZVN4206A",
+      "manufacturer": "Diodes Incorporated (Zetex)",
+      "channel": "N-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.6,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.0,
+        "rds_on_max_ohm": 1.5,
+        "pd_max_w": 0.7,
+        "qg_typ_nc": 3.2
+      },
+      "datasheet": {
+        "url": "https://www.diodes.com/assets/Datasheets/ZVN4206A.pdf",
+        "revision": "Issue 5",
+        "evidence": "E-Line / TO-92 compatible package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S); V_DSS = 60V, I_D = 600mA continuous, V_GS(th) <= 3.0V, R_DS(on) <= 1.5 Ohm @ V_GS = 5V, P_tot = 700mW."
+      }
+    },
+    {
+      "part_number": "ZVN3306A",
+      "manufacturer": "Diodes Incorporated (Zetex)",
+      "channel": "N-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.15,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 2.4,
+        "rds_on_max_ohm": 10.0,
+        "pd_max_w": null,
+        "qg_typ_nc": null
+      },
+      "datasheet": {
+        "url": "https://www.diodes.com/assets/Datasheets/ZVN3306A.pdf",
+        "revision": "Issue 4",
+        "evidence": "TO-92 compatible D-G-S pinout (Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source); V_DSS = 60V, I_D = 150mA, V_GS(th) <= 2.4V, R_DS(on) <= 10 Ohm @ V_GS = 5V. Note: P_D and Q_g omitted in abbreviated catalog record to trigger human datasheet verification."
+      }
+    },
+    {
+      "part_number": "2N7000",
+      "manufacturer": "onsemi",
+      "channel": "N-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "S",
+        "2": "G",
+        "3": "D"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.2,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.0,
+        "rds_on_max_ohm": 5.0,
+        "pd_max_w": 0.35,
+        "qg_typ_nc": 1.4
+      },
+      "datasheet": {
+        "url": "https://www.onsemi.com/pdf/datasheet/nds7002a-d.pdf",
+        "revision": "Rev. 11",
+        "evidence": "TO-92 package with Pin 1 = Source, Pin 2 = Gate, Pin 3 = Drain (S-G-D — reversed Drain/Source relative to D-G-S / C-B-E footprints); V_DSS = 60V, I_D = 200mA, V_GS(th) = 3.0V max, R_DS(on) = 5.0 Ohm."
+      }
+    },
+    {
+      "part_number": "BS170",
+      "manufacturer": "onsemi",
+      "channel": "N-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.5,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.0,
+        "rds_on_max_ohm": 5.0,
+        "pd_max_w": 0.83,
+        "qg_typ_nc": 2.0
+      },
+      "datasheet": {
+        "url": "https://www.onsemi.com/pdf/datasheet/bs170-d.pdf",
+        "revision": "Rev. 7",
+        "evidence": "TO-92 package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S); V_DSS = 60V, I_D = 500mA, V_GS(th) = 3.0V max, R_DS(on) = 5.0 Ohm max, P_D = 830mW."
+      }
+    },
+    {
+      "part_number": "ZVP3306A",
+      "manufacturer": "Diodes Incorporated (Zetex)",
+      "channel": "P-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.16,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.5,
+        "rds_on_max_ohm": 14.0,
+        "pd_max_w": 0.625,
+        "qg_typ_nc": 2.5
+      },
+      "datasheet": {
+        "url": "https://www.diodes.com/assets/Datasheets/ZVP3306A.pdf",
+        "revision": "Issue 4",
+        "evidence": "TO-92 compatible package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S, drop-in pin-compatible with TO-92 PNP C-B-E footprint like BC307); |V_DSS| = 60V, |I_D| = 160mA, |V_GS(th)| <= 3.5V, R_DS(on) <= 14 Ohm, P_tot = 625mW."
+      }
+    },
+    {
+      "part_number": "ZVP2106A",
+      "manufacturer": "Diodes Incorporated (Zetex)",
+      "channel": "P-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.28,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.5,
+        "rds_on_max_ohm": 5.0,
+        "pd_max_w": 0.7,
+        "qg_typ_nc": 3.8
+      },
+      "datasheet": {
+        "url": "https://www.diodes.com/assets/Datasheets/ZVP2106A.pdf",
+        "revision": "Issue 5",
+        "evidence": "TO-92 compatible package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S); |V_DSS| = 60V, |I_D| = 280mA, |V_GS(th)| <= 3.5V, R_DS(on) <= 5.0 Ohm, P_tot = 700mW."
+      }
+    },
+    {
+      "part_number": "TP0606N3-G",
+      "manufacturer": "Microchip / Supertex",
+      "channel": "P-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "S",
+        "2": "G",
+        "3": "D"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.38,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.5,
+        "rds_on_max_ohm": 3.5,
+        "pd_max_w": 0.74,
+        "qg_typ_nc": 3.1
+      },
+      "datasheet": {
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/TP0606-P-Channel-Enhancement-Mode-Vertical-DMOS-FET-Data-Sheet-20005921A.pdf",
+        "revision": "DS20005921A",
+        "evidence": "TO-92 package with Pin 1 = Source, Pin 2 = Gate, Pin 3 = Drain (S-G-D — incompatible with D-G-S / C-B-E footprints without lead crossing); |V_DSS| = 60V, |I_D| = 380mA, R_DS(on) = 3.5 Ohm."
+      }
+    },
+    {
+      "part_number": "VP2106N3-G",
+      "manufacturer": "Microchip / Supertex",
+      "channel": "P-channel",
+      "package": "TO-92",
+      "pinout": {
+        "1": "D",
+        "2": "G",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 60.0,
+        "id_max_a": 0.25,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 3.5,
+        "rds_on_max_ohm": 6.0,
+        "pd_max_w": null,
+        "qg_typ_nc": null
+      },
+      "datasheet": {
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/VP2106-P-Channel-Enhancement-Mode-Vertical-DMOS-FET-Data-Sheet-20005920A.pdf",
+        "revision": "DS20005920A",
+        "evidence": "TO-92 package with Pin 1 = Drain, Pin 2 = Gate, Pin 3 = Source (D-G-S); |V_DSS| = 60V, |I_D| = 250mA, |V_GS(th)| <= 3.5V, R_DS(on) <= 6.0 Ohm. Note: P_D and Q_g omitted in catalog entry to flag human datasheet verification."
+      }
+    },
+    {
+      "part_number": "BSS138",
+      "manufacturer": "onsemi",
+      "channel": "N-channel",
+      "package": "SOT-23",
+      "pinout": {
+        "1": "G",
+        "2": "S",
+        "3": "D"
+      },
+      "specs": {
+        "vds_max_v": 50.0,
+        "id_max_a": 0.22,
+        "vgs_max_v": 20.0,
+        "vgs_th_max_v": 1.5,
+        "rds_on_max_ohm": 3.5,
+        "pd_max_w": 0.36,
+        "qg_typ_nc": 1.0
+      },
+      "datasheet": {
+        "url": "https://www.onsemi.com/pdf/datasheet/bss138-d.pdf",
+        "revision": "Rev. 7",
+        "evidence": "SOT-23 SMD package (incompatible with through-hole TO-92 footprint); Pin 1 = Gate, Pin 2 = Source, Pin 3 = Drain (G-S-D); V_DSS = 50V, I_D = 220mA."
+      }
+    },
+    {
+      "part_number": "IRLZ44N",
+      "manufacturer": "Infineon",
+      "channel": "N-channel",
+      "package": "TO-220",
+      "pinout": {
+        "1": "G",
+        "2": "D",
+        "3": "S"
+      },
+      "specs": {
+        "vds_max_v": 55.0,
+        "id_max_a": 47.0,
+        "vgs_max_v": 16.0,
+        "vgs_th_max_v": 2.0,
+        "rds_on_max_ohm": 0.022,
+        "pd_max_w": 110.0,
+        "qg_typ_nc": 48.0
+      },
+      "datasheet": {
+        "url": "https://www.infineon.com/dgdl/Infineon-IRLZ44N-DataSheet-v01_01-EN.pdf",
+        "revision": "v01_01",
+        "evidence": "TO-220AB package (incompatible with TO-92 footprint); Pin 1 = Gate, Pin 2 = Drain, Pin 3 = Source (G-D-S); logic-level gate drive, V_DSS = 55V, I_D = 47A, R_DS(on) = 22 mOhm."
+      }
+    }
+  ]
+}
