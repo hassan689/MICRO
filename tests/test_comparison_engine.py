@@ -39,6 +39,15 @@ class ComparisonEngineTests(unittest.TestCase):
                 ov["before_mean_branch_efficiency_pct"],
             )
             self.assertEqual(ov["after_total_dc_drive_current_ma"], 0.0)
+            self.assertIsNotNone(report["image_to_circuit_synthesis"])
+
+    def test_different_images_synthesize_different_bom_and_netlist_values(self):
+        with tempfile.TemporaryDirectory() as dir_a, tempfile.TemporaryDirectory() as dir_b:
+            res_0 = run_full_comparison(sample_index=0, output_dir=Path(dir_a))
+            res_7 = run_full_comparison(sample_index=7, output_dir=Path(dir_b))
+            params_0 = res_0["report"]["image_to_circuit_synthesis"]["derived_component_parameters"]
+            params_7 = res_7["report"]["image_to_circuit_synthesis"]["derived_component_parameters"]
+            self.assertNotEqual(params_0, params_7)
 
 
 if __name__ == "__main__":

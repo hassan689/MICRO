@@ -30,6 +30,10 @@ from components.circuit_map import (
     derive_component_operating_point,
     parse_resistance_ohms,
 )
+from components.image_to_circuit import (
+    resolve_sample_image,
+    synthesize_bom_and_netlist_from_image,
+)
 from models.ml_extensions import (
     NumpyCNNDefectPatchClassifier,
     build_board_failure_logistic_model,
@@ -278,20 +282,36 @@ def simulate_image_repair(raw_root=DEFAULT_RAW_ROOT, sample_index=0):
 def run_full_comparison(
     raw_root=DEFAULT_RAW_ROOT,
     sample_index=0,
+    image_path=None,
     quantity=100,
     currency="USD",
-    bom_path=DEFAULT_BOM_PATH,
-    netlist_path=DEFAULT_NETLIST_PATH,
+    bom_path=None,
+    netlist_path=None,
+    synthesize_from_image=True,
     catalog_path=DEFAULT_CATALOG_PATH,
     quotes_path=DEFAULT_QUOTES_PATH,
     output_dir=DEFAULT_OUTPUT_DIR,
 ):
-    """Execute the complete Before-vs-After comparison across Modules 1, 2, 3, and 4."""
+    """Execute the complete Before-vs-After comparison across Modules 1, 2, 3, and 4.
+    By default (`synthesize_from_image=True`), the selected PCB image is the SOLE starting point:
+    it automatically generates `generated_bom.csv` and `generated_board.net` directly from the image's
+    copper trace geometry and defect detections before running Modules 2, 3, and 4!
+    """
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Module 1 Visual Inspection & Repair Verification
+    # 1. Module 1 Visual Inspection & Repair Verification on the single input PCB image
     image_sim = simulate_image_repair(raw_root, sample_index)
+    img_p, ref_p, ann_p = resolve_sample_image(raw_root, sample_index, image_path)
+
+    synthesis_info = None
+    if synthesize_from_image or bom_path is None or netlist_path is None:
+        synth = synthesize_bom_and_netlist_from_image(
+            img_p, ref_p, ann_p, output_dir / "synthesized_circuit"
+        )
+        bom_path = synth["bom_path"]
+        netlist_path = synth["netlist_path"]
+        synthesis_info = synth["metadata"]
 
     # 2. Module 2 Circuit Map + Module 3 & 4 Component Optimization across Q1, Q2, Q3
     circuit_map = build_circuit_map(bom_path, netlist_path)
@@ -341,6 +361,8 @@ def run_full_comparison(
     cost_after_top_100 = sum(b["top_ranked_optimization"]["after_optimized"]["unit_price_usd"] * quantity for b in branch_comparisons)
 
     summary_payload = {
+        "single_image_starting_point": str(img_p.resolve()),
+        "image_to_circuit_synthesis": synthesis_info,
         "module1_board_comparison": {
             "image_name": image_sim["image_name"],
             "before": image_sim["before_metrics"],
