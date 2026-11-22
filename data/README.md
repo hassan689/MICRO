@@ -85,6 +85,39 @@ recorded and checked before training. Original split files are never edited.
 DeepPCB supports the image defect-detection task; graph learning, routing, BOM
 fusion, and yield prediction require additional data.
 
+## Classical baseline
+
+Run the aligned-image-difference baseline only on the saved validation indices:
+
+```bash
+python -m baselines.difference_detector
+```
+
+The baseline compares each `*_test.jpg` image with its aligned `*_temp.jpg`
+reference, thresholds the grayscale difference, removes noise, and reports
+class-agnostic bounding-box precision, recall, and F1 at IoU 0.5. It does not
+use ground-truth defect classes. Configuration and results are written to
+`outputs/baseline/difference-detector/` and logged to MLflow (`sqlite:///mlflow.db`).
+
+## Reproducible pipeline and MLflow tracking
+
+Run the complete pipeline (data validation, leakage-free split check, classical
+baseline, Faster R-CNN training, MLflow model registration, and report export)
+with one command from the project root:
+
+```bash
+python run_pipeline.py
+```
+
+Use `python run_pipeline.py --smoke-test` for a fast 1-epoch verification run, or
+build and run the container with `docker build -t micro-pcb-pipeline .` and
+`docker run --rm micro-pcb-pipeline`. View logged runs and the registered model
+(`DeepPCB-FasterRCNN-Detector`) with:
+
+```bash
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+```
+
 ## Attribution and usage
 
 Retain the upstream `LICENSE` and `README.md` when copying the dataset.

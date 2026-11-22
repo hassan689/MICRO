@@ -58,3 +58,9 @@ outputs/
 checkpoints/
 *.ckpt
 
+# MLflow local tracking store
+mlruns/
+mlartifacts/
+mlflow.db
+
+
