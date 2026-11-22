@@ -68,6 +68,121 @@ def pin_sort_key(pin_str):
     return (1, 0, text)
 
 
+def parse_resistance_ohms(value_str):
+    """Parse engineering resistor strings like '470', '2.2K', '5,1K', '22K', '1M' into Ohms."""
+    text = str(value_str or "").strip().upper().replace(",", ".")
+    match = re.match(r"^(\d+(?:\.\d+)?)\s*([KMR]?)(?:OHM|Ω)?$", text)
+    if not match:
+        return None
+    number = float(match.group(1))
+    unit = match.group(2)
+    multiplier = {"": 1.0, "R": 1.0, "K": 1e3, "M": 1e6}.get(unit, 1.0)
+    return number * multiplier
+
+
+def infer_rail_voltages(components, nets):
+    """Dynamically infer power rail voltages from voltage regulators and net names in the netlist."""
+    rail_voltages = {"GND": 0.0, "VSS": 0.0, "0V": 0.0}
+    comp_by_ref = {c["reference"]: c for c in components}
+
+    # Check regulators / DC-DC converters in the schematic (e.g., 7805 -> 5V, 7812 -> 12V, LT1373 -> 13V VPP)
+    for comp in components:
+        val = (comp.get("value") or "").upper()
+        reg_match = re.search(r"78(\d{2})", val)
+        if reg_match:
+            volts = float(int(reg_match.group(1)))
+            for pin in comp.get("pins", []):
+                if "VO" in (pin.get("pinfunction") or "").upper() or pin.get("pintype") == "power_out":
+                    rail_voltages[pin["net_name"]] = volts
+        if "LT1373" in val or "13V" in val:
+            for net in nets:
+                if "VPP" in net["name"].upper():
+                    rail_voltages[net["name"]] = 13.0
+
+    # Parse explicit voltage net names (e.g. +5V, +12V, 3V3, VCC, VPP)
+    for net in nets:
+        name = net["name"]
+        upper = name.upper()
+        if name in rail_voltages:
+            continue
+        v_match = re.search(r"([+-]?\d+(?:\.\d+)?)V", upper)
+        if v_match:
+            rail_voltages[name] = abs(float(v_match.group(1)))
+        elif "VPP" in upper:
+            rail_voltages[name] = 13.0
+        elif any(tag in upper for tag in ("VCC", "VDD")):
+            rail_voltages[name] = rail_voltages.get("VCC", 5.0)
+
+    return rail_voltages
+
+
+def derive_component_operating_point(reference, circuit_map, vds_safety_factor=2.5, id_safety_factor=2.5):
+    """Dynamically calculate operating voltage, current, and power from connected nets and resistors."""
+    target = str(reference).strip().upper()
+    comp_by_ref = {c["reference"].upper(): c for c in circuit_map["components"]}
+    if target not in comp_by_ref:
+        raise ValueError(f"Component '{reference}' not found in circuit map")
+    comp = comp_by_ref[target]
+    rail_voltages = infer_rail_voltages(circuit_map["components"], circuit_map["nets"])
+    max_board_voltage = max(rail_voltages.values()) if rail_voltages else 13.0
+
+    connected_voltages = []
+    connected_resistors_ohms = []
+    pin_analysis = []
+
+    for pin in comp.get("pins", []):
+        net_name = pin["net_name"]
+        net_v = rail_voltages.get(net_name)
+        peer_resistors = []
+        for peer_token in pin.get("connected_peers", []):
+            peer_ref = peer_token.split(":", 1)[0].upper()
+            peer_comp = comp_by_ref.get(peer_ref)
+            if peer_comp and peer_comp["reference"].upper().startswith("R"):
+                ohms = parse_resistance_ohms(peer_comp["value"])
+                if ohms and ohms > 0:
+                    peer_resistors.append({"reference": peer_comp["reference"], "value": peer_comp["value"], "ohms": ohms})
+                    connected_resistors_ohms.append(ohms)
+        if net_v is not None:
+            connected_voltages.append(net_v)
+        pin_analysis.append({
+            "pin": pin["pin"],
+            "pinfunction": pin["pinfunction"],
+            "net_name": net_name,
+            "inferred_net_voltage_v": net_v,
+            "connected_resistors": peer_resistors,
+        })
+
+    operating_v = max([v for v in connected_voltages if v > 0] + [max_board_voltage])
+    min_load_r = min(connected_resistors_ohms) if connected_resistors_ohms else 220.0
+    # Ohm's Law worst-case branch current I = V / R_min, plus safety derating
+    branch_current_a = operating_v / max(min_load_r, 1.0)
+    required_vds_v = round(max(20.0, operating_v * vds_safety_factor), 2)
+    required_id_a = round(max(0.10, branch_current_a * id_safety_factor), 4)
+    logic_rail_v = min([v for v in rail_voltages.values() if v > 0] + [5.0])
+    max_vgs_th_v = round(min(3.5, logic_rail_v * 0.7), 2)
+    max_rds_on_ohm = round(min(15.0, max(14.0, min_load_r * 0.065)), 2)
+    # On-state MOSFET conduction power dissipation P = I^2 * R_DS(on) with 2.5x thermal margin
+    conduction_p_w = (required_id_a ** 2) * max_rds_on_ohm * 2.5
+    required_pd_w = round(max(0.30, min(0.60, conduction_p_w)), 3)
+
+    return {
+        "reference": comp["reference"],
+        "derived_from_netlist": True,
+        "rail_voltages_v": rail_voltages,
+        "operating_voltage_v": operating_v,
+        "minimum_connected_resistance_ohm": min_load_r,
+        "estimated_branch_current_a": round(branch_current_a, 5),
+        "vds_safety_factor": vds_safety_factor,
+        "id_safety_factor": id_safety_factor,
+        "min_vds_v": required_vds_v,
+        "min_id_a": required_id_a,
+        "max_vgs_th_v": max_vgs_th_v,
+        "max_rds_on_ohm": max_rds_on_ohm,
+        "min_pd_w": required_pd_w,
+        "pin_electrical_context": pin_analysis,
+    }
+
+
 def parse_bom_csv(bom_path=DEFAULT_BOM_PATH):
     """Parse and validate a BOM CSV file."""
     bom_path = Path(bom_path)

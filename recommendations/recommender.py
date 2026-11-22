@@ -11,7 +11,16 @@ import hashlib
 import json
 from pathlib import Path
 
-from components.circuit_map import DEFAULT_BOM_PATH, DEFAULT_NETLIST_PATH, build_circuit_map
+from components.circuit_map import (
+    DEFAULT_BOM_PATH,
+    DEFAULT_NETLIST_PATH,
+    build_circuit_map,
+    derive_component_operating_point,
+)
+from models.ml_extensions import (
+    build_mosfet_compatibility_logistic_model,
+    verify_datasheet_url_live,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CATALOG_PATH = PROJECT_ROOT / "data/inputs/mosfet_catalog.json"
@@ -199,10 +208,23 @@ def evaluate_candidate(candidate, requirements):
     eligible = len(violations) == 0
     requires_human_review = len(missing_required_specs) > 0 or len(missing_optional_specs) > 0
 
-    # Compute electrical suitability score for tie-breaking / preview before Module 4 cost ranking
+    # Compute electrical suitability score + Logistic Regression compatibility probability
     vds_ratio = (specs.get("vds_max_v") or 0.0) / max(requirements.get("min_vds_v") or 1.0, 1.0)
     id_ratio = (specs.get("id_max_a") or 0.0) / max(requirements.get("min_id_a") or 0.05, 0.05)
+    vgs_margin = (requirements.get("max_vgs_th_v") or 3.5) - (specs.get("vgs_th_max_v") or 3.5)
     rds = specs.get("rds_on_max_ohm")
+    rds_margin = ((requirements.get("max_rds_on_ohm") or 15.0) - (rds if rds is not None else 15.0)) / 15.0
+    pd_val = specs.get("pd_max_w")
+    pd_ratio = (pd_val if pd_val is not None else (requirements.get("min_pd_w") or 0.3)) / max(requirements.get("min_pd_w") or 0.3, 0.1)
+    pkg_pin_match = 1.0 if (pkg_ok and ch_ok and pin_ok) else 0.0
+
+    logreg_model = requirements.get("_logreg_model")
+    if logreg_model is not None:
+        feat_vec = [[pkg_pin_match, min(vds_ratio, 4.0), min(id_ratio, 5.0), vgs_margin, rds_margin, min(pd_ratio, 4.0)]]
+        logreg_prob = round(float(logreg_model.predict_proba(feat_vec)[0]), 4)
+    else:
+        logreg_prob = 1.0 if eligible else 0.0
+
     rds_score = (1.0 / max(rds, 0.01)) if rds is not None else 0.0
     suitability_score = round(min(vds_ratio, 5.0) * 10.0 + min(id_ratio, 10.0) * 10.0 + min(rds_score, 10.0) * 5.0, 2)
 
@@ -220,6 +242,7 @@ def evaluate_candidate(candidate, requirements):
         "violations": violations,
         "checks": checks,
         "electrical_suitability_score": suitability_score if eligible else 0.0,
+        "logistic_compatibility_probability": logreg_prob if eligible else round(min(logreg_prob, 0.35), 4),
         "datasheet": candidate["datasheet"],
     }
 
@@ -230,16 +253,20 @@ def recommend_replacements(
     catalog_path=DEFAULT_CATALOG_PATH,
     bom_path=DEFAULT_BOM_PATH,
     netlist_path=DEFAULT_NETLIST_PATH,
-    min_vds_v=25.0,
-    min_id_a=0.1,
-    max_vgs_th_v=3.5,
-    max_rds_on_ohm=15.0,
-    min_pd_w=0.3,
+    min_vds_v=None,
+    min_id_a=None,
+    max_vgs_th_v=None,
+    max_rds_on_ohm=None,
+    min_pd_w=None,
     channel_override=None,
     package_override=None,
     strict_missing_specs=False,
+    verify_datasheets_online=False,
 ):
-    """Filter catalog MOSFETs for a component in the Module 2 circuit map."""
+    """Filter catalog MOSFETs for a component in the Module 2 circuit map.
+    When electrical thresholds are not manually passed, they are dynamically derived from
+    the KiCad netlist power rails and connected load resistors via Ohm's Law.
+    """
     if circuit_map is None:
         circuit_map = build_circuit_map(bom_path, netlist_path)
     catalog = load_mosfet_catalog(catalog_path)
@@ -252,6 +279,9 @@ def recommend_replacements(
     if component is None:
         raise ValueError(f"Component reference '{reference}' not found in Module 2 circuit map")
 
+    derived_op = derive_component_operating_point(target_ref, circuit_map)
+    logreg_model = build_mosfet_compatibility_logistic_model()
+
     requirements = {
         "reference": component["reference"],
         "original_value": component["value"],
@@ -259,18 +289,24 @@ def recommend_replacements(
         "package": package_override or extract_package_from_footprint(component["footprint"]),
         "channel": channel_override or infer_channel_from_component(component),
         "pinout": infer_pinout_from_component(component),
-        "min_vds_v": min_vds_v,
-        "min_id_a": min_id_a,
-        "max_vgs_th_v": max_vgs_th_v,
-        "max_rds_on_ohm": max_rds_on_ohm,
-        "min_pd_w": min_pd_w,
+        "min_vds_v": min_vds_v if min_vds_v is not None else derived_op["min_vds_v"],
+        "min_id_a": min_id_a if min_id_a is not None else derived_op["min_id_a"],
+        "max_vgs_th_v": max_vgs_th_v if max_vgs_th_v is not None else derived_op["max_vgs_th_v"],
+        "max_rds_on_ohm": max_rds_on_ohm if max_rds_on_ohm is not None else derived_op["max_rds_on_ohm"],
+        "min_pd_w": min_pd_w if min_pd_w is not None else derived_op["min_pd_w"],
         "strict_missing_specs": strict_missing_specs,
+        "dynamic_circuit_derivation": derived_op,
+        "_logreg_model": logreg_model,
     }
 
-    evaluations = [
-        evaluate_candidate(candidate, requirements)
-        for candidate in catalog["candidates"]
-    ]
+    evaluations = []
+    for candidate in catalog["candidates"]:
+        ev = evaluate_candidate(candidate, requirements)
+        if verify_datasheets_online and ev["eligible"]:
+            ev["datasheet_live_check"] = verify_datasheet_url_live(ev["datasheet"]["url"])
+        evaluations.append(ev)
+
+    requirements.pop("_logreg_model", None)
     eligible = sorted(
         [item for item in evaluations if item["eligible"]],
         key=lambda item: (

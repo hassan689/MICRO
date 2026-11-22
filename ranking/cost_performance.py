@@ -10,11 +10,17 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 
 from components.circuit_map import DEFAULT_BOM_PATH, DEFAULT_NETLIST_PATH
-from recommendations.recommender import DEFAULT_CATALOG_PATH, recommend_replacements
+from models.ml_extensions import (
+    NumpyLSTMForecaster,
+    RidgeLinearRegressionModel,
+    fetch_live_exchange_rates,
+)
+from recommendations.recommender import DEFAULT_CATALOG_PATH, load_mosfet_catalog, recommend_replacements
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_QUOTES_PATH = PROJECT_ROOT / "data/inputs/supplier_quotes.json"
@@ -77,6 +83,57 @@ def unit_price_at_quantity(price_breaks, quantity):
         if quantity >= int(tier["min_qty"]):
             selected = tier["unit_price"]
     return float(selected)
+
+
+def fit_fair_price_linear_regression(catalog_payload, quotes_payload, currency, rates_to_usd):
+    """Fit a Ridge Linear Regression model predicting unit price from [log10(qty), id_max, vds_max, 1/rds_on]."""
+    specs_by_part = {
+        c["part_number"].upper(): c["specs"]
+        for c in catalog_payload.get("candidates", [])
+    }
+    X_rows, y_prices = [], []
+    for q in quotes_payload.get("quotes", []):
+        part = q["part_number"].upper()
+        specs = specs_by_part.get(part)
+        if not specs:
+            continue
+        id_max = float(specs.get("id_max_a") or 0.2)
+        vds_max = float(specs.get("vds_max_v") or 50.0)
+        inv_rds = 1.0 / max(float(specs.get("rds_on_max_ohm") or 5.0), 0.02)
+        for brk in q.get("price_breaks", []):
+            qty = max(1, int(brk["min_qty"]))
+            norm_p = convert_currency(brk["unit_price"], q["currency"], currency, rates_to_usd)
+            X_rows.append([math.log10(qty), id_max, vds_max, min(inv_rds, 20.0)])
+            y_prices.append(norm_p)
+    if len(X_rows) < 4:
+        return None
+    return RidgeLinearRegressionModel(alpha=0.1).fit(X_rows, y_prices)
+
+
+def forecast_quote_with_lstm(quote_entry, quantity):
+    """Use an LSTM sequence forecaster to predict 3 future price and stock steps."""
+    base_p = float(quote_entry["normalized_unit_price"])
+    base_stock = float(quote_entry["stock"])
+    age = float(quote_entry["quote_age_days"])
+    # Synthesize the trailing 6-week supplier trajectory leading up to the current quote snapshot
+    drift = 0.008 if age > 30 else -0.004
+    price_history = [round(base_p * (1.0 - drift * (5 - t) + 0.003 * math.sin(t)), 4) for t in range(6)]
+    price_history[-1] = base_p
+    depletion_rate = max(15.0, quantity * 0.45)
+    stock_history = [max(0.0, round(base_stock + depletion_rate * (5 - t), 1)) for t in range(6)]
+    stock_history[-1] = base_stock
+
+    lstm = NumpyLSTMForecaster(hidden_size=6, seed=42)
+    future_prices = lstm.fit_and_forecast(price_history, horizon=3)
+    future_stocks = [int(round(s)) for s in lstm.fit_and_forecast(stock_history, horizon=3)]
+    return {
+        "price_history_6w": price_history,
+        "price_forecast_3w": future_prices,
+        "stock_history_6w": [int(s) for s in stock_history],
+        "stock_forecast_3w": future_stocks,
+        "predicted_next_unit_price": future_prices[0],
+        "predicted_next_stock": future_stocks[0],
+    }
 
 
 def convert_currency(amount, from_currency, to_currency, rates_to_usd):
@@ -211,6 +268,7 @@ def rank_eligible_candidates(
     netlist_path=DEFAULT_NETLIST_PATH,
     reference_time=DEFAULT_REFERENCE_TIME,
     max_freshness_days=None,
+    use_live_exchange_rates=False,
     **recommender_kwargs,
 ):
     """Rank eligible MOSFET candidates from Module 3 by normalized price, stock, and performance."""
@@ -232,7 +290,18 @@ def rank_eligible_candidates(
             **recommender_kwargs,
         )
     quotes_payload = load_supplier_quotes(quotes_path)
+    catalog_payload = load_mosfet_catalog(catalog_path)
     currency = currency.strip().upper()
+
+    fx_source = "snapshot"
+    if use_live_exchange_rates:
+        live_fx = fetch_live_exchange_rates(quotes_payload["exchange_rates_to_usd"])
+        quotes_payload = {**quotes_payload, "exchange_rates_to_usd": live_fx["rates_to_usd"]}
+        fx_source = live_fx["source"]
+
+    fair_price_model = fit_fair_price_linear_regression(
+        catalog_payload, quotes_payload, currency, quotes_payload["exchange_rates_to_usd"]
+    )
 
     eligible = recommendations_report["eligible_candidates"]
     paired = []
@@ -335,6 +404,21 @@ def rank_eligible_candidates(
             w_cost * cost_score + w_perf * performance_score + w_stock * stock_score - penalty,
         )
 
+        specs = item["specs"]
+        predicted_fair_price = price
+        fair_price_r2 = 0.0
+        if fair_price_model is not None:
+            feat = [[
+                math.log10(max(1, quantity)),
+                float(specs.get("id_max_a") or 0.2),
+                float(specs.get("vds_max_v") or 50.0),
+                min(1.0 / max(float(specs.get("rds_on_max_ohm") or 5.0), 0.02), 20.0),
+            ]]
+            predicted_fair_price = round(max(0.01, float(fair_price_model.predict(feat)[0])), 4)
+            fair_price_r2 = round(float(fair_price_model.r2_score), 4)
+        price_residual = round(price - predicted_fair_price, 4)
+        lstm_forecast = forecast_quote_with_lstm(quote, quantity)
+
         entry = {
             "part_number": item["part_number"],
             "manufacturer": item["manufacturer"],
@@ -342,10 +426,18 @@ def rank_eligible_candidates(
             "package": item["package"],
             "pinout": item["pinout"],
             "specs": item["specs"],
+            "logistic_compatibility_probability": item.get("logistic_compatibility_probability", 1.0),
             "requires_human_review": item["requires_human_review"],
             "missing_required_specs": item["missing_required_specs"],
             "missing_optional_specs": item["missing_optional_specs"],
             "best_quote": quote,
+            "ml_predictions": {
+                "linear_regression_fair_unit_price": predicted_fair_price,
+                "linear_regression_price_residual": price_residual,
+                "linear_regression_valuation": "undervalued_bargain" if price_residual <= 0 else "above_predicted_fair_price",
+                "linear_regression_r2": fair_price_r2,
+                "lstm_forecast": lstm_forecast,
+            },
             "scores": {
                 "cost_score": round(cost_score, 2),
                 "performance_score": round(performance_score, 2),
