@@ -3,10 +3,10 @@
 import unittest
 
 import torch
-
 from evaluation.metrics import detection_metrics
 from models.detector import build_detector
 from preprocessing.splits import grouped_indices
+from baselines.difference_detector import box_iou, evaluate_predictions
 
 
 class SplitTests(unittest.TestCase):
@@ -59,6 +59,22 @@ class DetectorTests(unittest.TestCase):
         self.assertEqual(model.roi_heads.box_predictor.cls_score.out_features, 7)
         self.assertEqual(model.roi_heads.box_predictor.bbox_pred.out_features, 28)
         self.assertEqual(model.transform.min_size, (320,))
+
+
+class BaselineTests(unittest.TestCase):
+    def test_box_iou(self):
+        self.assertEqual(box_iou([0, 0, 10, 10], [0, 0, 10, 10]), 1.0)
+        self.assertEqual(box_iou([0, 0, 10, 10], [10, 10, 20, 20]), 0.0)
+
+    def test_class_agnostic_matching_counts(self):
+        predictions = [{"boxes": [[0, 0, 10, 10], [20, 20, 30, 30]],
+                        "scores": [0.9, 0.8]}]
+        targets = [[[0, 0, 10, 10], [20, 20, 30, 30]]]
+        metrics = evaluate_predictions(predictions, targets)
+        self.assertEqual(metrics["tp"], 2)
+        self.assertEqual(metrics["fp"], 0)
+        self.assertEqual(metrics["fn"], 0)
+        self.assertEqual(metrics["f1"], 1.0)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -9,10 +10,17 @@ from pathlib import Path
 import torch
 import torchvision
 from torch.utils.data import DataLoader, Subset
+from baselines.difference_detector import DEFAULT_EXPERIMENT, DEFAULT_TRACKING_URI, read_dvc_version
 from evaluation.metrics import evaluate
 from models.detector import build_detector
 from preprocessing.dataset import CLASS_NAMES, DEFAULT_DATA_ROOT, PROJECT_ROOT, DeepPCBDataset, detection_collate
 from preprocessing.splits import DEFAULT_SPLIT_PATH, load_or_create_split
+
+DEFAULT_REGISTERED_MODEL = "DeepPCB-FasterRCNN-Detector"
+
+
+def sanitize_metric_name(name):
+    return name.lower().replace(" ", "_").replace("-", "_")
 
 
 def save_checkpoint(checkpoint, path):
@@ -60,6 +68,16 @@ def main():
     parser.add_argument("--resume", type=Path, help="Continue a checkpoint in a new output directory; epochs is the total target")
     parser.add_argument("--no-pretrained", action="store_true", help="Random initialization; no downloads")
     parser.add_argument("--smoke-test", action="store_true", help="One epoch on 2 train and 2 validation images at 320px")
+    parser.add_argument("--tracking-uri", default=DEFAULT_TRACKING_URI,
+                        help="MLflow tracking URI (default: sqlite:///.../mlflow.db)")
+    parser.add_argument("--experiment-name", default=DEFAULT_EXPERIMENT,
+                        help="MLflow experiment name")
+    parser.add_argument("--run-name", default=None,
+                        help="Optional MLflow run name")
+    parser.add_argument("--register-model", default=DEFAULT_REGISTERED_MODEL,
+                        help="Model name in MLflow Model Registry (empty string to skip)")
+    parser.add_argument("--no-mlflow", action="store_true",
+                        help="Disable MLflow tracking and model registration")
     args = parser.parse_args()
     if min(args.epochs, args.batch_size, args.threads) < 1 or not math.isfinite(args.lr) or args.lr <= 0:
         parser.error("epochs, batch size, threads, and learning rate must be positive")
@@ -129,6 +147,47 @@ def main():
     (output / "dataset_source.py").write_text(loader_source, encoding="utf-8")
     (output / "config.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     (output / "split.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    dvc_info = read_dvc_version()
+    split_sha256 = hashlib.sha256((output / "split.json").read_bytes()).hexdigest()
+    mlflow_mod = None
+    active_run = None
+    if not args.no_mlflow:
+        import mlflow as mlflow_mod
+
+        mlflow_mod.set_tracking_uri(args.tracking_uri)
+        mlflow_mod.set_experiment(args.experiment_name)
+        run_label = args.run_name or f"fasterrcnn-{kind}-epochs{args.epochs}-lr{args.lr}"
+        active_run = mlflow_mod.start_run(run_name=run_label)
+        mlflow_mod.set_tags({
+            "model_type": "primary_detector",
+            "architecture": config["architecture"],
+            "smoke_test": str(args.smoke_test),
+            "dataset": "DeepPCB",
+            "dvc_rev_lock": dvc_info["dvc_rev_lock"],
+            "dvc_md5": dvc_info["dvc_md5"],
+        })
+        mlflow_mod.log_params({
+            "architecture": config["architecture"],
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "image_size": args.image_size,
+            "lr": args.lr,
+            "optimizer": "SGD",
+            "momentum": 0.9,
+            "weight_decay": 0.0005,
+            "pretrained": not args.no_pretrained,
+            "seed": args.seed,
+            "val_fraction": args.val_fraction,
+            "train_samples": len(train_ids),
+            "val_samples": len(val_ids),
+            "device": str(device),
+            "source_sha256": manifest["source_sha256"],
+            "split_sha256": split_sha256,
+            "dvc_rev_lock": dvc_info["dvc_rev_lock"],
+            "dvc_md5": dvc_info["dvc_md5"],
+            "validation_groups": ",".join(manifest["val_groups"]),
+            "smoke_test": args.smoke_test,
+        })
     print(f"Device: {device} | Training: {len(train_ids)} | Validation: {len(val_ids)}", flush=True)
     print(f"Output: {output}", flush=True)
     if args.smoke_test:
@@ -177,7 +236,42 @@ def main():
                   "seconds": time.perf_counter() - started}
         with (output / "metrics.jsonl").open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
+        if mlflow_mod is not None:
+            step_metrics = {
+                "train_loss": float(loss),
+                "val_map50": float(metrics["map50"]),
+                "best_val_map50": float(best),
+                "epoch_seconds": float(record["seconds"]),
+            }
+            for class_name, class_data in metrics["per_class"].items():
+                if class_data["ap50"] is not None:
+                    step_metrics[f"ap50_{sanitize_metric_name(class_name)}"] = float(class_data["ap50"])
+            mlflow_mod.log_metrics(step_metrics, step=epoch)
         print(f"Loss: {loss:.4f} | Validation AP50: {metrics['map50']:.4f} | {record['seconds']:.1f}s", flush=True)
+    if mlflow_mod is not None and active_run is not None:
+        try:
+            for artifact_name in ("config.json", "split.json", "dataset_source.py", "metrics.jsonl", "best.pt"):
+                artifact_file = output / artifact_name
+                if artifact_file.is_file():
+                    mlflow_mod.log_artifact(str(artifact_file), artifact_path="training_outputs")
+            if args.register_model:
+                best_ckpt = torch.load(output / "best.pt", map_location="cpu", weights_only=True)
+                best_model = build_detector(pretrained=False, image_size=args.image_size)
+                best_model.load_state_dict(best_ckpt["model"])
+                best_model.eval()
+                model_info = mlflow_mod.pytorch.log_model(
+                    pytorch_model=best_model,
+                    artifact_path="detector_model",
+                    registered_model_name=args.register_model,
+                )
+                print(
+                    f"Registered top-performing model '{args.register_model}' in MLflow Registry "
+                    f"(URI: {model_info.model_uri})",
+                    flush=True,
+                )
+            print(f"MLflow training run logged: {active_run.info.run_id} ({args.tracking_uri})", flush=True)
+        finally:
+            mlflow_mod.end_run()
     print(f"Finished. Best checkpoint: {output / 'best.pt'}", flush=True)
 
 
