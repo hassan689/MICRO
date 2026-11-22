@@ -263,6 +263,9 @@ def main():
             defective_path = root / base.with_name(f"{base.stem}_test.jpg")
             reference_path = root / base.with_name(f"{base.stem}_temp.jpg")
         annotation_path = root / base.with_name(f"{annotation_stem}.txt")
+        if not annotation_path.is_file():
+            alt_parent = base.parent.with_name(f"{base.parent.name}_not")
+            annotation_path = root / alt_parent / f"{annotation_stem}.txt"
         for path in (defective_path, reference_path, annotation_path):
             if not path.is_file():
                 raise FileNotFoundError(f"Missing dataset file: {path}")

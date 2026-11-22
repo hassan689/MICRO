@@ -18,3 +18,256 @@ stages:
       hash: md5
       md5: 10266e7af61e4cc930dc0cb6a2dc14f8
       size: 559
+  split:
+    cmd: python -m preprocessing.splits --root data/raw/DeepPCB/PCBData --output
+      data/splits/deeppcb.json
+    deps:
+    - path: data/processed/deeppcb_manifest.json
+      hash: md5
+      md5: 10266e7af61e4cc930dc0cb6a2dc14f8
+      size: 559
+    - path: preprocessing/splits.py
+      hash: md5
+      md5: 5db1d280d72da0a5291cc3a32460bda7
+      size: 4791
+    outs:
+    - path: data/splits/deeppcb.json
+      hash: md5
+      md5: dad1811ba2ddf995c00faef450c65ec2
+      size: 53390
+  baseline:
+    cmd: python -m baselines.difference_detector --root data/raw/DeepPCB/PCBData
+      --split-file data/splits/deeppcb.json --output 
+      outputs/baseline/difference-detector
+    deps:
+    - path: baselines/difference_detector.py
+      hash: md5
+      md5: 90b27d61c3c44ca5cf69636ac3a56832
+      size: 14558
+    - path: data/raw/DeepPCB
+      hash: md5
+      md5: 0dd139bb5d2de9fa5a02a04eab302924.dir
+      size: 127807630
+      nfiles: 4548
+    - path: data/splits/deeppcb.json
+      hash: md5
+      md5: dad1811ba2ddf995c00faef450c65ec2
+      size: 53390
+    outs:
+    - path: outputs/baseline/difference-detector/config.json
+      hash: md5
+      md5: 22b93c02a8413d727100979d9ef924f0
+      size: 582
+    - path: outputs/baseline/difference-detector/metrics.json
+      hash: md5
+      md5: 424303e5fe9d425de8a51f953c320a97
+      size: 12884
+    - path: outputs/baseline/difference-detector/per_image.csv
+      hash: md5
+      md5: 6cda32b134ae8a2330274140e6abdc9f
+      size: 9512
+    - path: outputs/baseline/difference-detector/predictions.json
+      hash: md5
+      md5: 6dae13a2b684c8ff148b9a7209d84f9a
+      size: 1764630
+  train:
+    cmd: python -m training.train --root data/raw/DeepPCB/PCBData --split-file 
+      data/splits/deeppcb.json --output outputs/training/dvc-run --smoke-test 
+      --no-pretrained --overwrite-output
+    deps:
+    - path: data/raw/DeepPCB
+      hash: md5
+      md5: 0dd139bb5d2de9fa5a02a04eab302924.dir
+      size: 127807630
+      nfiles: 4548
+    - path: data/splits/deeppcb.json
+      hash: md5
+      md5: dad1811ba2ddf995c00faef450c65ec2
+      size: 53390
+    - path: evaluation/metrics.py
+      hash: md5
+      md5: fa27a91db05249fd0565a10b37dc7526
+      size: 3119
+    - path: models/detector.py
+      hash: md5
+      md5: 21587af5c86d369504f5f5b67f7dc52b
+      size: 914
+    - path: models/ml_extensions.py
+      hash: md5
+      md5: 005d88aca899bb12aa078ac767efa44e
+      size: 13472
+    - path: training/train.py
+      hash: md5
+      md5: cfd27b27bb10c45759003f76bd3b6549
+      size: 23982
+    outs:
+    - path: outputs/training/dvc-run/config.json
+      hash: md5
+      md5: 9d21f414eacae61a8c5fcf11f42b0c20
+      size: 869
+    - path: outputs/training/dvc-run/metrics.jsonl
+      hash: md5
+      md5: 7ab1505d14f4917f95041c63997e8bf7
+      size: 511
+    - path: outputs/training/dvc-run/summary_metrics.json
+      hash: md5
+      md5: f9b30bb3516550ae1b1c1299a5036084
+      size: 143
+  export_mlflow:
+    cmd: python -m evaluation.export_mlflow --output-dir outputs/mlflow_report
+    deps:
+    - path: evaluation/export_mlflow.py
+      hash: md5
+      md5: d2cd5ab9a63701a30a42c70dd53b2030
+      size: 4624
+    - path: outputs/baseline/difference-detector/metrics.json
+      hash: md5
+      md5: 424303e5fe9d425de8a51f953c320a97
+      size: 12884
+    - path: outputs/training/dvc-run/summary_metrics.json
+      hash: md5
+      md5: f9b30bb3516550ae1b1c1299a5036084
+      size: 143
+    outs:
+    - path: outputs/mlflow_report/mlflow_runs_and_registry.json
+      hash: md5
+      md5: 0dc06e89e3d55e2dc46cba3cde910ef4
+      size: 7080
+    - path: outputs/mlflow_report/mlflow_runs_and_registry.md
+      hash: md5
+      md5: b735d45512e9edff0f3fb2ec5c74acb3
+      size: 1824
+  image_to_circuit:
+    cmd: python -m components.image_to_circuit --raw-root 
+      data/raw/DeepPCB/PCBData --sample-index 0 --output-dir 
+      outputs/generated_inputs
+    deps:
+    - path: components/image_to_circuit.py
+      hash: md5
+      md5: e9bc4b6f5c0bdaddde8d4571cb1de6c2
+      size: 20274
+    - path: data/processed/deeppcb_manifest.json
+      hash: md5
+      md5: 10266e7af61e4cc930dc0cb6a2dc14f8
+      size: 559
+    outs:
+    - path: outputs/generated_inputs/generated_board.net
+      hash: md5
+      md5: cc73aa3c0ff89df45952b7fa48d1ef3b
+      size: 15440
+    - path: outputs/generated_inputs/generated_bom.csv
+      hash: md5
+      md5: aa83426a34641bb7fbfa259d4fad51f4
+      size: 1552
+    - path: outputs/generated_inputs/image_synthesis_metadata.json
+      hash: md5
+      md5: b0f9bfe146af54fddb2941598323f4da
+      size: 4060
+  circuit_map:
+    cmd: python -m components.circuit_map --bom 
+      outputs/generated_inputs/generated_bom.csv --netlist 
+      outputs/generated_inputs/generated_board.net --output-dir 
+      outputs/components
+    deps:
+    - path: components/circuit_map.py
+      hash: md5
+      md5: 87bfb109cb40a6f2150aa847111cd5e9
+      size: 27743
+    - path: outputs/generated_inputs/generated_board.net
+      hash: md5
+      md5: cc73aa3c0ff89df45952b7fa48d1ef3b
+      size: 15440
+    - path: outputs/generated_inputs/generated_bom.csv
+      hash: md5
+      md5: aa83426a34641bb7fbfa259d4fad51f4
+      size: 1552
+    outs:
+    - path: outputs/components/circuit_map.json
+      hash: md5
+      md5: 8d3510dc47a3ee5cf675e4dcc327770f
+      size: 38449
+    - path: outputs/components/components_summary.csv
+      hash: md5
+      md5: 555f3b11f00692cd5d8e969df6b551c2
+      size: 2438
+    - path: outputs/components/pin_connections.csv
+      hash: md5
+      md5: d084954cf0ac61f88a40bda0572063d6
+      size: 3646
+  recommend:
+    cmd: python -m recommendations.recommender --ref Q1 --bom 
+      outputs/generated_inputs/generated_bom.csv --netlist 
+      outputs/generated_inputs/generated_board.net --catalog 
+      data/inputs/mosfet_catalog.json --output-dir outputs/recommendations
+    deps:
+    - path: data/inputs/mosfet_catalog.json
+      hash: md5
+      md5: 1febff3e1203c81a2278a20e1f14d7ab
+      size: 9196
+    - path: outputs/components/circuit_map.json
+      hash: md5
+      md5: 8d3510dc47a3ee5cf675e4dcc327770f
+      size: 38449
+    - path: recommendations/recommender.py
+      hash: md5
+      md5: 5548cb44018c22abae3469143e110d24
+      size: 20610
+    outs:
+    - path: outputs/recommendations/candidates_q1.csv
+      hash: md5
+      md5: d95ff7dbb7e6b9ad5e91d5e08f5145d9
+      size: 3069
+    - path: outputs/recommendations/recommendations_q1.json
+      hash: md5
+      md5: e414e265ee07fdc9612ce4b503b50b63
+      size: 32455
+  rank:
+    cmd: python -m ranking.cost_performance --ref Q1 --quantity 100 --currency 
+      USD --bom outputs/generated_inputs/generated_bom.csv --netlist 
+      outputs/generated_inputs/generated_board.net --catalog 
+      data/inputs/mosfet_catalog.json --quotes data/inputs/supplier_quotes.json 
+      --output-dir outputs/ranking
+    deps:
+    - path: data/inputs/supplier_quotes.json
+      hash: md5
+      md5: 7aff87d906972d8c1509cc5643e56821
+      size: 5290
+    - path: outputs/recommendations/recommendations_q1.json
+      hash: md5
+      md5: e414e265ee07fdc9612ce4b503b50b63
+      size: 32455
+    - path: ranking/cost_performance.py
+      hash: md5
+      md5: ccadaeea63097c2a11ddbb7e3adcaa0c
+      size: 26928
+    outs:
+    - path: outputs/ranking/ranking_q1_qty100_usd.csv
+      hash: md5
+      md5: e4fcd3f00c5960f2379c1f129d585407
+      size: 850
+    - path: outputs/ranking/ranking_q1_qty100_usd.json
+      hash: md5
+      md5: 6650d7327d9e74d513b1af783837c0d2
+      size: 13119
+  comparison:
+    cmd: python -m evaluation.comparison_engine --raw-root 
+      data/raw/DeepPCB/PCBData --sample-index 0 --quantity 100 --currency USD 
+      --output-dir outputs/comparison
+    deps:
+    - path: evaluation/comparison_engine.py
+      hash: md5
+      md5: c0392c02fb7d0b02d32279d9b6c10323
+      size: 28644
+    - path: outputs/ranking/ranking_q1_qty100_usd.json
+      hash: md5
+      md5: 6650d7327d9e74d513b1af783837c0d2
+      size: 13119
+    outs:
+    - path: outputs/comparison/before_after_comparison.json
+      hash: md5
+      md5: 4c453b4b00b61096b3819ac20eb33607
+      size: 17354
+    - path: outputs/comparison/before_after_comparison.png
+      hash: md5
+      md5: 08c6c87f5e8a166596409e811618f655
+      size: 353147
