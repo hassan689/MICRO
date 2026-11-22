@@ -1,0 +1,194 @@
+{
+  "quotes_version": "2026.11-v1",
+  "base_currency": "USD",
+  "exchange_rates_to_usd": {
+    "USD": 1.0,
+    "EUR": 1.08,
+    "GBP": 1.27
+  },
+  "max_freshness_days": 30,
+  "quotes": [
+    {
+      "part_number": "ZVN4206A",
+      "supplier": "DigiKey",
+      "sku": "ZVN4206A-ND",
+      "currency": "USD",
+      "stock": 4850,
+      "lead_time_days": 2,
+      "quote_timestamp": "2026-11-20T14:30:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.68},
+        {"min_qty": 100, "unit_price": 0.44},
+        {"min_qty": 1000, "unit_price": 0.31}
+      ]
+    },
+    {
+      "part_number": "ZVN4206A",
+      "supplier": "Mouser",
+      "sku": "522-ZVN4206A",
+      "currency": "EUR",
+      "stock": 3200,
+      "lead_time_days": 3,
+      "quote_timestamp": "2026-11-19T10:15:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.64},
+        {"min_qty": 100, "unit_price": 0.42},
+        {"min_qty": 1000, "unit_price": 0.29}
+      ]
+    },
+    {
+      "part_number": "BS170",
+      "supplier": "DigiKey",
+      "sku": "BS170-ND",
+      "currency": "USD",
+      "stock": 18400,
+      "lead_time_days": 1,
+      "quote_timestamp": "2026-11-21T09:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.38},
+        {"min_qty": 100, "unit_price": 0.19},
+        {"min_qty": 1000, "unit_price": 0.12}
+      ]
+    },
+    {
+      "part_number": "BS170",
+      "supplier": "Farnell",
+      "sku": "FN-BS170",
+      "currency": "GBP",
+      "stock": 9500,
+      "lead_time_days": 4,
+      "quote_timestamp": "2026-11-18T16:45:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.31},
+        {"min_qty": 100, "unit_price": 0.16},
+        {"min_qty": 1000, "unit_price": 0.10}
+      ]
+    },
+    {
+      "part_number": "VN10LP",
+      "supplier": "Mouser",
+      "sku": "689-VN10LP",
+      "currency": "USD",
+      "stock": 1420,
+      "lead_time_days": 5,
+      "quote_timestamp": "2026-11-17T11:20:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.79},
+        {"min_qty": 100, "unit_price": 0.54},
+        {"min_qty": 1000, "unit_price": 0.39}
+      ]
+    },
+    {
+      "part_number": "ZVN3306A",
+      "supplier": "DigiKey",
+      "sku": "ZVN3306A-ND",
+      "currency": "USD",
+      "stock": 2100,
+      "lead_time_days": 3,
+      "quote_timestamp": "2026-09-10T08:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.52},
+        {"min_qty": 100, "unit_price": 0.33},
+        {"min_qty": 1000, "unit_price": 0.23}
+      ]
+    },
+    {
+      "part_number": "ZVP2106A",
+      "supplier": "DigiKey",
+      "sku": "ZVP2106A-ND",
+      "currency": "USD",
+      "stock": 3600,
+      "lead_time_days": 2,
+      "quote_timestamp": "2026-11-20T15:10:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.72},
+        {"min_qty": 100, "unit_price": 0.46},
+        {"min_qty": 1000, "unit_price": 0.32}
+      ]
+    },
+    {
+      "part_number": "ZVP3306A",
+      "supplier": "Mouser",
+      "sku": "522-ZVP3306A",
+      "currency": "USD",
+      "stock": 6200,
+      "lead_time_days": 2,
+      "quote_timestamp": "2026-11-20T12:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.58},
+        {"min_qty": 100, "unit_price": 0.35},
+        {"min_qty": 1000, "unit_price": 0.24}
+      ]
+    },
+    {
+      "part_number": "VP2106N3-G",
+      "supplier": "DigiKey",
+      "sku": "VP2106N3-G-ND",
+      "currency": "USD",
+      "stock": 890,
+      "lead_time_days": 6,
+      "quote_timestamp": "2026-10-01T09:30:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.85},
+        {"min_qty": 100, "unit_price": 0.59},
+        {"min_qty": 1000, "unit_price": 0.43}
+      ]
+    },
+    {
+      "part_number": "2N7000",
+      "supplier": "DigiKey",
+      "sku": "2N7000-ND",
+      "currency": "USD",
+      "stock": 25000,
+      "lead_time_days": 1,
+      "quote_timestamp": "2026-11-21T08:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.28},
+        {"min_qty": 100, "unit_price": 0.14},
+        {"min_qty": 1000, "unit_price": 0.09}
+      ]
+    },
+    {
+      "part_number": "TP0606N3-G",
+      "supplier": "Mouser",
+      "sku": "689-TP0606N3-G",
+      "currency": "USD",
+      "stock": 1900,
+      "lead_time_days": 3,
+      "quote_timestamp": "2026-11-19T14:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.76},
+        {"min_qty": 100, "unit_price": 0.51},
+        {"min_qty": 1000, "unit_price": 0.37}
+      ]
+    },
+    {
+      "part_number": "BSS138",
+      "supplier": "DigiKey",
+      "sku": "BSS138CT-ND",
+      "currency": "USD",
+      "stock": 45000,
+      "lead_time_days": 1,
+      "quote_timestamp": "2026-11-21T10:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 0.18},
+        {"min_qty": 100, "unit_price": 0.08},
+        {"min_qty": 1000, "unit_price": 0.04}
+      ]
+    },
+    {
+      "part_number": "IRLZ44N",
+      "supplier": "DigiKey",
+      "sku": "IRLZ44NPBF-ND",
+      "currency": "USD",
+      "stock": 8200,
+      "lead_time_days": 2,
+      "quote_timestamp": "2026-11-20T16:00:00Z",
+      "price_breaks": [
+        {"min_qty": 1, "unit_price": 1.35},
+        {"min_qty": 100, "unit_price": 0.92},
+        {"min_qty": 1000, "unit_price": 0.68}
+      ]
+    }
+  ]
+}
