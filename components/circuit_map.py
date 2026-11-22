@@ -133,6 +133,12 @@ def derive_component_operating_point(reference, circuit_map, vds_safety_factor=2
     for pin in comp.get("pins", []):
         net_name = pin["net_name"]
         net_v = rail_voltages.get(net_name)
+        if net_v is None:
+            upper_net = net_name.upper()
+            if "VPP" in upper_net:
+                net_v = 13.0
+            elif "VCC" in upper_net or "VDD" in upper_net:
+                net_v = 5.0
         peer_resistors = []
         for peer_token in pin.get("connected_peers", []):
             peer_ref = peer_token.split(":", 1)[0].upper()
@@ -142,7 +148,7 @@ def derive_component_operating_point(reference, circuit_map, vds_safety_factor=2
                 if ohms and ohms > 0:
                     peer_resistors.append({"reference": peer_comp["reference"], "value": peer_comp["value"], "ohms": ohms})
                     connected_resistors_ohms.append(ohms)
-        if net_v is not None:
+        if net_v is not None and net_v > 0:
             connected_voltages.append(net_v)
         pin_analysis.append({
             "pin": pin["pin"],
@@ -152,7 +158,7 @@ def derive_component_operating_point(reference, circuit_map, vds_safety_factor=2
             "connected_resistors": peer_resistors,
         })
 
-    operating_v = max([v for v in connected_voltages if v > 0] + [max_board_voltage])
+    operating_v = max(connected_voltages) if connected_voltages else max_board_voltage
     min_load_r = min(connected_resistors_ohms) if connected_resistors_ohms else 220.0
     # Ohm's Law worst-case branch current I = V / R_min, plus safety derating
     branch_current_a = operating_v / max(min_load_r, 1.0)
