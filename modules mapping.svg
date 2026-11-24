@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1559.692833333333 1410.5" width="1559.692833333333" height="1410.5" style="--bg:#18181B;--fg:#F4F4F5;--line:#71717A;--muted:#A1A1AA;--surface:#27272A;--border:#3F3F46;background:var(--bg)">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 85%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+    <polygon points="0 0, 8 2.5, 0 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+  <marker id="arrowhead-start" markerWidth="8" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+    <polygon points="8 0, 0 2.5, 8 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+</defs>
+<g class="subgraph" data-id="Data" data-label="1. Versioned Data &amp; Automated Validation (DVC)">
+  <rect x="250.77724999999995" y="420.29999999999995" width="378.50099999999986" height="436.1" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="250.77724999999995" y="420.29999999999995" width="378.50099999999986" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="262.77725" y="434.29999999999995" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">1. Versioned Data &amp; Automated Validation (DVC)</text>
+</g>
+<g class="subgraph" data-id="Mod1" data-label="2. Module 1: Visual PCB Defect Inspection &amp; MLflow Registry">
+  <rect x="40" y="916.4" width="812.7281666666665" height="246.5" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="40" y="916.4" width="812.7281666666665" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="52" y="930.4" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">2. Module 1: Visual PCB Defect Inspection &amp; MLflow Registry</text>
+</g>
+<g class="subgraph" data-id="Mod2" data-label="3. Module 2: Component Info, Netlist Parsing &amp; Dynamic Ohm's Law Solver">
+  <rect x="974.3188333333331" y="40" width="545.3739999999999" height="334.3" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="974.3188333333331" y="40" width="545.3739999999999" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="986.3188333333331" y="54" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">3. Module 2: Component Info, Netlist Parsing &amp; Dynamic Ohm&#39;s Law Solver</text>
+</g>
+<g class="subgraph" data-id="Mod3" data-label="4. Module 3: MOSFET Replacement Recommendation Engine">
+  <rect x="939.0458333333331" y="434.3" width="462.16049999999984" height="334.3" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="939.0458333333331" y="434.3" width="462.16049999999984" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="951.0458333333331" y="448.3" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">4. Module 3: MOSFET Replacement Recommendation Engine</text>
+</g>
+<g class="subgraph" data-id="Mod4" data-label="5. Module 4: Cost, Stock &amp; Performance Comparison">
+  <rect x="880.7281666666665" y="828.6" width="488.9099999999998" height="334.3" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="880.7281666666665" y="828.6" width="488.9099999999998" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="892.7281666666665" y="842.6" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">5. Module 4: Cost, Stock &amp; Performance Comparison</text>
+</g>
+<g class="subgraph" data-id="Comp" data-label="6. Before-vs-After Real-Time Wire &amp; Board Comparison Engine">
+  <rect x="622.0879166666666" y="1222.9" width="560.0459999999999" height="147.60000000000002" rx="0" ry="0" fill="var(--_group-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <rect x="622.0879166666666" y="1222.9" width="560.0459999999999" height="28" rx="0" ry="0" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+  <text x="634.0879166666666" y="1236.9" font-size="12" font-weight="600" fill="var(--_text-sec)" dy="4.199999999999999">6. Before-vs-After Real-Time Wire &amp; Board Comparison Engine</text>
+</g>
+<polyline class="edge" data-from="SPLIT" data-to="BASE" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="440.0277499999999,840.4000000000001 440.0277499999999,903.9000000000001 251.85099999999994,903.9000000000001 251.85099999999994,967.4000000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="SPLIT" data-to="FRCNN" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="440.0277499999999,840.4000000000001 440.0277499999999,903.9000000000001 628.2044999999998,903.9000000000001 628.2044999999998,967.4000000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="OHM" data-to="REC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1276.719833333333,358.3 1276.719833333333,549.0999999999999 1193.801333333333,549.0999999999999 1193.801333333333,573.0999999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="LR3" data-to="RANK" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1193.801333333333,752.5999999999999 1193.801333333333,946.9000000000001 1125.1831666666665,946.9000000000001 1125.1831666666665,967.4000000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CNN_LR1" data-to="COMP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="679.0386666666665,1148.3500000000001 679.0386666666665,1207.625 902.1109166666665,1207.625 902.1109166666665,1266.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="LIN_LSTM" data-to="COMP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1125.1831666666665,1131.45 1125.1831666666665,1207.625 902.1109166666665,1207.625 902.1109166666665,1266.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="RAW" data-to="PREP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="440.02774999999986,525.0999999999999 440.02774999999986,573.0999999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="PREP" data-to="MAN" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="440.02774999999986,626.9 440.02774999999986,667.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MAN" data-to="SPLIT" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="440.02774999999986,721.7 440.02774999999986,769.7" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="FRCNN" data-to="CNN_LR1" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="628.2044999999998,1021.2 628.2044999999998,1049.4250000000002 679.0386666666665,1049.4250000000002 679.0386666666665,1077.65" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="BASE" data-to="MLFLOW" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="251.85099999999994,1021.2000000000002 251.85099999999997,1077.65" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="FRCNN" data-to="MLFLOW" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="628.2044999999998,1021.2 628.2044999999998,1049.4250000000002 297.6216666666666,1049.4250000000002 297.6216666666666,1077.65" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="BOM" data-to="CMAP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1409.8773333333331,137.8 1409.8773333333331,161.8 1276.719833333333,161.8 1276.719833333333,185.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="NET" data-to="CMAP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1143.562333333333,137.8 1143.562333333333,161.8 1276.719833333333,161.8 1276.719833333333,185.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CMAP" data-to="OHM" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1276.719833333333,239.60000000000002 1276.719833333333,287.6" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CAT" data-to="REC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1110.882833333333,525.0999999999999 1110.882833333333,549.0999999999999 1193.801333333333,549.0999999999999 1193.801333333333,573.0999999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="REC" data-to="LR3" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1193.801333333333,643.7999999999998 1193.801333333333,698.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="QUOTES" data-to="RANK" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1056.5649999999998,926.4 1056.5649999999998,946.9000000000001 1125.1831666666665,946.9000000000001 1125.1831666666665,967.4000000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="RANK" data-to="LIN_LSTM" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="1125.1831666666665,1038.1 1125.1831666666665,1077.65" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="node" data-id="RAW" data-label="data/raw/DeepPCB (1,500 image pairs)
+Tracked in DeepPCB.dvc" data-shape="rectangle">
+  <rect x="309.01424999999995" y="471.29999999999995" width="262.02699999999993" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="440.0277499999999" y="498.19999999999993" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="440.0277499999999" dy="-3.9000000000000012">data/raw/DeepPCB (1,500 image pairs)</tspan><tspan x="440.0277499999999" dy="16.900000000000002">Tracked in DeepPCB.dvc</tspan></text>
+</g>
+<g class="node" data-id="PREP" data-label="preprocessing/prepare.py &amp; dataset.py
+Schema, JPEG magic bytes, class ID &amp; box validation" data-shape="rectangle">
+  <rect x="267.14775" y="573.0999999999999" width="345.7599999999998" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="440.02774999999986" y="599.9999999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="440.02774999999986" dy="-3.9000000000000012">preprocessing/prepare.py &amp; dataset.py</tspan><tspan x="440.02774999999986" dy="16.900000000000002">Schema, JPEG magic bytes, class ID &amp; box validation</tspan></text>
+</g>
+<g class="node" data-id="MAN" data-label="data/processed/deeppcb_manifest.json
+Locked in dvc.yaml &amp; dvc.lock" data-shape="rectangle">
+  <rect x="302.71574999999996" y="667.9" width="274.6239999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="440.0277499999999" y="694.8" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="440.0277499999999" dy="-3.9000000000000012">data/processed/deeppcb_manifest.json</tspan><tspan x="440.0277499999999" dy="16.900000000000002">Locked in dvc.yaml &amp; dvc.lock</tspan></text>
+</g>
+<g class="node" data-id="SPLIT" data-label="preprocessing/splits.py
+Leakage-Free Board-Group-Disjoint Split
+800 Train / 200 Val (group00041) / 500 Test reserved" data-shape="rectangle">
+  <rect x="266.77725" y="769.7" width="346.50099999999986" height="70.7" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="440.0277499999999" y="805.0500000000001" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="440.0277499999999" dy="-12.350000000000001">preprocessing/splits.py</tspan><tspan x="440.0277499999999" dy="16.900000000000002">Leakage-Free Board-Group-Disjoint Split</tspan><tspan x="440.0277499999999" dy="16.900000000000002">800 Train / 200 Val (group00041) / 500 Test reserved</tspan></text>
+</g>
+<g class="node" data-id="BASE" data-label="baselines/difference_detector.py
+Classical Grayscale AbsDiff + Morphology Baseline (IoU 0.5)" data-shape="rectangle">
+  <rect x="56" y="967.4000000000001" width="391.7019999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="251.85099999999994" y="994.3000000000001" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="251.85099999999994" dy="-3.9000000000000012">baselines/difference_detector.py</tspan><tspan x="251.85099999999994" dy="16.900000000000002">Classical Grayscale AbsDiff + Morphology Baseline (IoU 0.5)</tspan></text>
+</g>
+<g class="node" data-id="FRCNN" data-label="training/train.py &amp; models/detector.py
+Faster R-CNN (MobileNetV3-Large-320-FPN)" data-shape="rectangle">
+  <rect x="475.7019999999999" y="967.4000000000001" width="305.00499999999994" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="628.2044999999998" y="994.3000000000001" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="628.2044999999998" dy="-3.9000000000000012">training/train.py &amp; models/detector.py</tspan><tspan x="628.2044999999998" dy="16.900000000000002">Faster R-CNN (MobileNetV3-Large-320-FPN)</tspan></text>
+</g>
+<g class="node" data-id="CNN_LR1" data-label="models/ml_extensions.py
+2D CNN Patch Anomaly Classifier +
+Logistic Regression Board Failure Risk P(Fail)" data-shape="rectangle">
+  <rect x="521.3491666666665" y="1077.65" width="315.37899999999996" height="70.7" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="679.0386666666665" y="1113" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="679.0386666666665" dy="-12.350000000000001">models/ml_extensions.py</tspan><tspan x="679.0386666666665" dy="16.900000000000002">2D CNN Patch Anomaly Classifier +</tspan><tspan x="679.0386666666665" dy="16.900000000000002">Logistic Regression Board Failure Risk P(Fail)</tspan></text>
+</g>
+<g class="node" data-id="MLFLOW" data-label="MLflow Tracking &amp; Model Registry
+sqlite:///mlflow.db
+Model: DeepPCB-FasterRCNN-Detector" data-shape="cylinder">
+  <rect x="160.30966666666666" y="1084.65" width="274.6239999999999" height="70.7" fill="var(--_node-fill)" stroke="none" />
+  <line x1="160.30966666666666" y1="1084.65" x2="160.30966666666666" y2="1155.3500000000001" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="434.93366666666657" y1="1084.65" x2="434.93366666666657" y2="1155.3500000000001" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="297.6216666666666" cy="1155.3500000000001" rx="137.31199999999995" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="297.6216666666666" cy="1084.65" rx="137.31199999999995" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="297.6216666666666" y="1120" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="297.6216666666666" dy="-12.350000000000001">MLflow Tracking &amp; Model Registry</tspan><tspan x="297.6216666666666" dy="16.900000000000002">sqlite:///mlflow.db</tspan><tspan x="297.6216666666666" dy="16.900000000000002">Model: DeepPCB-FasterRCNN-Detector</tspan></text>
+</g>
+<g class="node" data-id="BOM" data-label="data/inputs/bom.csv
+(56 BOM Components)" data-shape="rectangle">
+  <rect x="1324.805833333333" y="84" width="170.14299999999997" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1409.8773333333331" y="110.9" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1409.8773333333331" dy="-3.9000000000000012">data/inputs/bom.csv</tspan><tspan x="1409.8773333333331" dy="16.900000000000002">(56 BOM Components)</tspan></text>
+</g>
+<g class="node" data-id="NET" data-label="data/inputs/board.net
+(KiCad S-Expression Netlist: 111 Nets, 236 Pins)" data-shape="rectangle">
+  <rect x="990.3188333333331" y="84" width="306.4869999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1143.562333333333" y="110.9" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1143.562333333333" dy="-3.9000000000000012">data/inputs/board.net</tspan><tspan x="1143.562333333333" dy="16.900000000000002">(KiCad S-Expression Netlist: 111 Nets, 236 Pins)</tspan></text>
+</g>
+<g class="node" data-id="CMAP" data-label="components/circuit_map.py
+Cross-Validate Refs/Values/Footprints &amp; Map Pin-to-Net" data-shape="rectangle">
+  <rect x="1094.2068333333332" y="185.8" width="365.02599999999995" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1276.719833333333" y="212.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1276.719833333333" dy="-3.9000000000000012">components/circuit_map.py</tspan><tspan x="1276.719833333333" dy="16.900000000000002">Cross-Validate Refs/Values/Footprints &amp; Map Pin-to-Net</tspan></text>
+</g>
+<g class="node" data-id="OHM" data-label="derive_component_operating_point()
+Auto-detects Voltage Rails (7805=5V, LT1373=13V VPP)
+&amp; Load Resistors -&gt; Computes V_DS, I_D, R_DS(on), P_D via Ohm's Law" data-shape="rectangle">
+  <rect x="1049.7468333333331" y="287.6" width="453.94599999999997" height="70.7" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1276.719833333333" y="322.95000000000005" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1276.719833333333" dy="-12.350000000000001">derive_component_operating_point()</tspan><tspan x="1276.719833333333" dy="16.900000000000002">Auto-detects Voltage Rails (7805=5V, LT1373=13V VPP)</tspan><tspan x="1276.719833333333" dy="16.900000000000002">&amp; Load Resistors -&gt; Computes V_DS, I_D, R_DS(on), P_D via Ohm&#39;s Law</tspan></text>
+</g>
+<g class="node" data-id="CAT" data-label="data/inputs/mosfet_catalog.json
+(Package, Pinout, Polarity, Specs, Datasheets)" data-shape="rectangle">
+  <rect x="955.0458333333331" y="471.29999999999995" width="311.6739999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1110.882833333333" y="498.19999999999993" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1110.882833333333" dy="-3.9000000000000012">data/inputs/mosfet_catalog.json</tspan><tspan x="1110.882833333333" dy="16.900000000000002">(Package, Pinout, Polarity, Specs, Datasheets)</tspan></text>
+</g>
+<g class="node" data-id="REC" data-label="recommendations/recommender.py
+Rule Filter: Package (TO-92), Pinout (D-G-S), Polarity, Limits
++ Missing-Spec Flags + Live HTTP Datasheet Check" data-shape="rectangle">
+  <rect x="1002.3963333333331" y="573.0999999999999" width="382.80999999999983" height="70.7" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1193.801333333333" y="608.4499999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1193.801333333333" dy="-12.350000000000001">recommendations/recommender.py</tspan><tspan x="1193.801333333333" dy="16.900000000000002">Rule Filter: Package (TO-92), Pinout (D-G-S), Polarity, Limits</tspan><tspan x="1193.801333333333" dy="16.900000000000002">+ Missing-Spec Flags + Live HTTP Datasheet Check</tspan></text>
+</g>
+<g class="node" data-id="LR3" data-label="Logistic Regression Compatibility Classifier
+Predicts Calibrated P(Compatible) from Safety Margins" data-shape="rectangle">
+  <rect x="1015.7343333333331" y="698.8" width="356.13399999999984" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1193.801333333333" y="725.6999999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1193.801333333333" dy="-3.9000000000000012">Logistic Regression Compatibility Classifier</tspan><tspan x="1193.801333333333" dy="16.900000000000002">Predicts Calibrated P(Compatible) from Safety Margins</tspan></text>
+</g>
+<g class="node" data-id="QUOTES" data-label="data/inputs/supplier_quotes.json
++ Live FX API (open.er-api.com)" data-shape="rectangle">
+  <rect x="939.2599999999999" y="872.6" width="234.60999999999993" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1056.5649999999998" y="899.5" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1056.5649999999998" dy="-3.9000000000000012">data/inputs/supplier_quotes.json</tspan><tspan x="1056.5649999999998" dy="16.900000000000002">+ Live FX API (open.er-api.com)</tspan></text>
+</g>
+<g class="node" data-id="RANK" data-label="ranking/cost_performance.py
+Normalize Quantity Tiers &amp; Currency + Stale-Quote Alerts (&lt;30d)
+Weighted Score: Cost (45%) + Perf (35%) + Stock (20%)" data-shape="rectangle">
+  <rect x="919.3286666666664" y="967.4000000000001" width="411.70899999999995" height="70.7" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1125.1831666666665" y="1002.7500000000001" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1125.1831666666665" dy="-12.350000000000001">ranking/cost_performance.py</tspan><tspan x="1125.1831666666665" dy="16.900000000000002">Normalize Quantity Tiers &amp; Currency + Stale-Quote Alerts (&lt;30d)</tspan><tspan x="1125.1831666666665" dy="16.900000000000002">Weighted Score: Cost (45%) + Perf (35%) + Stock (20%)</tspan></text>
+</g>
+<g class="node" data-id="LIN_LSTM" data-label="Ridge Linear Regression Fair-Price Predictor (Bargain vs Overpriced)
++ LSTM Time-Series Forecaster (+3w Price &amp; Stock Trend)" data-shape="rectangle">
+  <rect x="896.7281666666665" y="1077.65" width="456.9099999999998" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1125.1831666666665" y="1104.5500000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="1125.1831666666665" dy="-3.9000000000000012">Ridge Linear Regression Fair-Price Predictor (Bargain vs Overpriced)</tspan><tspan x="1125.1831666666665" dy="16.900000000000002">+ LSTM Time-Series Forecaster (+3w Price &amp; Stock Trend)</tspan></text>
+</g>
+<g class="node" data-id="COMP" data-label="evaluation/comparison_engine.py
+1. Compares Selected Defective PCB vs Repaired PCB Output
+2. Simulates Real-Time KiCad Wires (Q1, Q2, Q3) with Original BJTs vs Top MOSFETs
+3. Computes Wire Voltage Gain, -98.3% Power Loss Reduction &amp; 99.57% Efficiency" data-shape="rectangle">
+  <rect x="638.0879166666666" y="1266.9" width="528.0459999999999" height="87.60000000000001" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="902.1109166666665" y="1310.7" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="902.1109166666665" dy="-20.8">evaluation/comparison_engine.py</tspan><tspan x="902.1109166666665" dy="16.900000000000002">1. Compares Selected Defective PCB vs Repaired PCB Output</tspan><tspan x="902.1109166666665" dy="16.900000000000002">2. Simulates Real-Time KiCad Wires (Q1, Q2, Q3) with Original BJTs vs Top MOSFETs</tspan><tspan x="902.1109166666665" dy="16.900000000000002">3. Computes Wire Voltage Gain, -98.3% Power Loss Reduction &amp; 99.57% Efficiency</tspan></text>
+</g>
+</svg>
